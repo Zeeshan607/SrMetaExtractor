@@ -1,11 +1,11 @@
 {
-    "name": "FYNDA/sr-meta-extractor",
+    "name": "fynda/sr-meta-extractor",
     "description": "The purpose of this package is to extract meta data from search result of any search engine related to specific set of keywords",
     "type": "library",
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "FYNDA\\SrMetaExtractor\\": "src/"
+            "Fynda\\SrMetaExtractor\\": "src/"
         }
     },
     "authors": [

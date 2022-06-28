@@ -1,6 +1,6 @@
 <?php
 
-namespace FYNDA\SrMetaExtractor;
+namespace  Fynda\SrMetaExtractor;
 
 class SrMetaExtractor
 {
