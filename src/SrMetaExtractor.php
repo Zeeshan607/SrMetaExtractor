@@ -2,6 +2,7 @@
 
 namespace  Fynda\SrMetaExtractor;
 
+
 class SrMetaExtractor
 {
 
@@ -27,18 +28,24 @@ class SrMetaExtractor
         //for each loop for keywords array
         $curl= curl_init();
 
-        foreach($keywords as $keyword){
-
-            $query=urlencode($keyword);
-            curl_setopt($curl, CURLOPT_URL, 'https://'.$this->searchEngine.'/search?q='.$query);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            $resp = curl_exec($curl);
-            array_push($this->resultCollection,$resp);
+        if ($curl === false) {
+            echo " curl was unable to initiate";
         }
+
+        foreach($keywords as $keyword){
+            $query=urlencode($keyword);
+            curl_setopt($curl, CURLOPT_URL, 'https://www.'.$this->searchEngine.'/search?q='.$query);
+            curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt ($curl, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+            $result= curl_exec($curl);
+            array_push($this->resultCollection,$result);
+        }
+//        $httpReturnCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
 
         curl_close($curl);
 
-        return $this->resultCollection;
+        return json_encode($this->resultCollection);
     }
 
 
