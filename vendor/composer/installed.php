@@ -1,22 +1,22 @@
 <?php return array(
     'root' => array(
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => NULL,
-        'name' => 'zeeshan/sr-meta-extracter',
+        'reference' => '0621694344aa53846efb8025bb57896ce450147d',
+        'name' => 'fynda/sr-meta-extractor',
         'dev' => true,
     ),
     'versions' => array(
-        'zeeshan/sr-meta-extracter' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
+        'fynda/sr-meta-extractor' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => NULL,
+            'reference' => '0621694344aa53846efb8025bb57896ce450147d',
             'dev_requirement' => false,
         ),
     ),

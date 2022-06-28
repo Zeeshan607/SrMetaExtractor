@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Zeeshan\\SrMetaExtracter\\' => array($baseDir . '/src'),
+    'Fynda\\SrMetaExtractor\\' => array($baseDir . '/src'),
 );
