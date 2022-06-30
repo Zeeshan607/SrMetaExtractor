@@ -3,6 +3,9 @@
 namespace  Fynda\SrMetaExtractor;
 
 
+use DOMXPath;
+use stdClass;
+
 class SrMetaExtractor
 {
 
@@ -29,33 +32,83 @@ class SrMetaExtractor
         $curl= curl_init();
 
         if ($curl === false) {
-            echo " curl was unable to initiate";
+                throw new \Exception("Unable to initialize curl");
         }
 
-        foreach($keywords as $keyword){
-            $query=urlencode($keyword);
-            curl_setopt($curl, CURLOPT_URL, 'https://www.'.$this->searchEngine.'/search?q='.$query);
-            curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt ($curl, CURLOPT_RETURNTRANSFER, true);
+        foreach($keywords as $kIndex=>$keyword) {
+            $finalKeywordResult=[];
+            $query = urlencode($keyword);
+            curl_setopt($curl, CURLOPT_URL, 'https://www.' . $this->searchEngine . '/search?q=' . $query);
+            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-            $result= curl_exec($curl);
-            array_push($this->resultCollection,$result);
+            $resultPage = curl_exec($curl);
+
+            if (curl_errno($curl) || $resultPage == false) {
+                throw new \Exception(curl_error($curl));
+            }
+
+            $dom = new \DOMDocument();
+            @$dom->loadHTML($resultPage);
+            $xpath = new DOMXPath($dom);
+//            loop for getting promoted sites
+            foreach ($xpath->query('//div[@class="uEierd"]//div[@class="Gx5Zad fP1Qef EtOod pkphOe"]') as $key => $pSite) {
+                $keywordSearchResult = new stdClass();
+                $keywordSearchResult->keyword_name = $keyword;
+                $keywordSearchResult->rank = $key;
+                $keywordSearchResult->meta = new stdClass();
+                foreach ($pSite->childNodes as $node) {
+
+                    if ($node->getAttribute("class") == "v5yQqb jqWpsc" && $node->firstChild->getAttribute("role") == "presentation") {
+                        //  url of site
+                        $keywordSearchResult->meta->url = $node->firstChild->getAttribute("href");
+                        // title of site
+                        $keywordSearchResult->meta->title = $xpath->query('a/div[@role="heading"]', $node)->item(0)->textContent;
+                        // bool For [Add or normal] site link
+                        $keywordSearchResult->meta->promoted = 1;
+                    }
+                    if ($node->getAttribute('class') == "w1C3Le" && $node->firstChild->getAttribute("class") == "MUxGbd yDYNvb lyLwlc") {
+                        $keywordSearchResult->meta->description = $node->firstChild->textContent;
+                    }
+                }
+                array_push($finalKeywordResult, $keywordSearchResult);
+            }
+
+//            loop for getting Normal sites
+            foreach ($xpath->query('//div[@class="Gx5Zad fP1Qef xpd EtOod pkphOe"]') as $key => $site) {
+
+                $keywordSearchResult = new stdClass();
+                $keywordSearchResult->keyword_name = $keyword;
+                $keywordSearchResult->rank = $key;
+                $keywordSearchResult->meta = new stdClass();
+                foreach ($site->childNodes as $node) {
+
+                    if ($node->getAttribute("class") == "egMi0 kCrYT") {
+                        //  url of site
+                        $keywordSearchResult->meta->url = "www." . $this->searchEngine . $node->firstChild->getAttribute("href");
+                        // title of site
+                        $keywordSearchResult->meta->title = $xpath->query('a/h3', $node)->item(0)->textContent;
+                        // bool For [Add or normal] site link
+                        $keywordSearchResult->meta->promoted = 0;
+                    }
+                    if ($node->getAttribute('class') == "kCrYT") {
+
+                        $keywordSearchResult->meta->description = $xpath->query('*/div[@class="BNeawe s3v9rd AP7Wnd"]', $node)->item(0)->textContent;
+                    }
+                }
+                array_push($finalKeywordResult, $keywordSearchResult);
+            }
+
+            $this->resultCollection[$kIndex]=$finalKeywordResult;
         }
-//        $httpReturnCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+
 
         curl_close($curl);
 
-        return json_encode($this->resultCollection);
+        return $this->resultCollection ;
     }
-
-
-
 
 
 
 }
 
-
-//Notes
-// $scrape = file_get_contents($url);
-//$url = 'https://'.$this->searchEngine.'/search?q='.$query;
