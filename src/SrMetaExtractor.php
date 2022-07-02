@@ -28,14 +28,15 @@ class SrMetaExtractor
     public function search(array $keywords){
 
 
-        //for each loop for keywords array
+//  initiating curl and checking for error;
         $curl= curl_init();
-
         if ($curl === false) {
                 throw new \Exception("Unable to initialize curl");
         }
 
+        //for each loop for keywords array
         foreach($keywords as $kIndex=>$keyword) {
+
             $finalKeywordResult=[];
             $query = urlencode($keyword);
             curl_setopt($curl, CURLOPT_URL, 'https://www.' . $this->searchEngine . '/search?q=' . $query);
