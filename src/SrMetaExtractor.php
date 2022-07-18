@@ -29,7 +29,7 @@ class SrMetaExtractor
     {
 
 
-        //  initiating curl and checking for error;
+        //initiating curl and checking for error;
         $curl = curl_init();
         if ($curl === false) {
             throw new \Exception("Unable to initialize curl");
@@ -60,22 +60,21 @@ class SrMetaExtractor
                 $keywordSearchResult = new stdClass();
                 $keywordSearchResult->keyword_name = $keyword;
                 $keywordSearchResult->rank = $key;
-                // creating nested object named meta for metadata separation
-                $keywordSearchResult->meta = new stdClass();
+               
                 //foreach loop for mapping child nodes of current promoted site block
                 foreach ($pSite->childNodes as $node) {
                     // if condition for getting result's title, link and promoted status
                     if ($node->getAttribute("class") == "v5yQqb jqWpsc" && $node->firstChild->getAttribute("role") == "presentation") {
                         //  url of site
-                        $keywordSearchResult->meta->url = $node->firstChild->getAttribute("href");
+                        $keywordSearchResult->url = $node->firstChild->getAttribute("href");
                         // title of site
-                        $keywordSearchResult->meta->title = $xpath->query('a/div[@role="heading"]', $node)->item(0)->textContent;
+                        $keywordSearchResult->title = $xpath->query('a/div[@role="heading"]', $node)->item(0)->textContent;
                         // bool For [Add or normal] site link
-                        $keywordSearchResult->meta->promoted = 1;
+                        $keywordSearchResult->promoted = 1;
                     }
                     // if condition for getting description of promoted site
                     if ($node->getAttribute('class') == "w1C3Le" && $node->firstChild->getAttribute("class") == "MUxGbd yDYNvb lyLwlc") {
-                        $keywordSearchResult->meta->description = $node->firstChild->textContent;
+                        $keywordSearchResult->description = $node->firstChild->textContent;
                     }
                 }
                 // pushing promoted sites data object into $keywordFinalResult array
@@ -88,23 +87,22 @@ class SrMetaExtractor
                 $keywordSearchResult = new stdClass();
                 $keywordSearchResult->keyword_name = $keyword;
                 $keywordSearchResult->rank = $key;
-                // creating nested object named meta for metadata separation
-                $keywordSearchResult->meta = new stdClass();
+          
                 //foreach loop for mapping child nodes of current normal site block
                 foreach ($site->childNodes as $node) {
                     // if condition for getting result's title, link and promoted status
                     if ($node->getAttribute("class") == "egMi0 kCrYT") {
                         //  url of site
-                        $keywordSearchResult->meta->url = "www." . $this->searchEngine . $node->firstChild->getAttribute("href");
+                        $keywordSearchResult->url = "www." . $this->searchEngine . $node->firstChild->getAttribute("href");
                         // title of site
-                        $keywordSearchResult->meta->title = $xpath->query('a/h3', $node)->item(0)->textContent;
+                        $keywordSearchResult->title = $xpath->query('a/h3', $node)->item(0)->textContent;
                         // bool For [Add or normal] site link
-                        $keywordSearchResult->meta->promoted = 0;
+                        $keywordSearchResult->promoted = 0;
                     }
                     // if condition for getting description of normal site
                     if ($node->getAttribute('class') == "kCrYT") {
 
-                        $keywordSearchResult->meta->description = $xpath->query('*/div[@class="BNeawe s3v9rd AP7Wnd"]', $node)->item(0)->textContent;
+                        $keywordSearchResult->description = $xpath->query('*/div[@class="BNeawe s3v9rd AP7Wnd"]', $node)->item(0)->textContent;
                     }
                 }
                 // pushing normal sites data object into $keywordFinalResult array

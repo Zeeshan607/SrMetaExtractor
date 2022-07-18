@@ -11,7 +11,7 @@ try {
 
     foreach ($data as $keywords) {
         foreach ($keywords as $sResult) {
-            echo $sResult->meta->title . "</br>";
+            echo $sResult->title  . "</br>";
         }
     }
 
